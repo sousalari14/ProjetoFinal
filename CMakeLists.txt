@@ -1,4 +1,4 @@
-
+# Generated Cmake Pico project file
 
 cmake_minimum_required(VERSION 3.13)
 
@@ -15,48 +15,58 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.1.0)
+set(sdkVersion 1.5.1)
 set(toolchainVersion 13_3_Rel1)
-set(picotoolVersion 2.1.0)
+set(picotoolVersion 2.0.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
-set(PICO_BOARD pico CACHE STRING "Board type")
+set(PICO_BOARD pico_w CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(DisplayC C CXX ASM)
+project(display_oled C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(DisplayC DisplayC.c inc/ssd1306.c)
+# Primeiro, adicione o executável
+add_executable(display_oled 
+    display_oled.c 
+    inc/ssd1306_i2c.c
+)
 
-pico_set_program_name(DisplayC "DisplayC")
-pico_set_program_version(DisplayC "0.1")
+# Depois, gere o código do PIO
+pico_generate_pio_header(display_oled ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
+
+pico_set_program_name(display_oled "display_oled")
+pico_set_program_version(display_oled "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(DisplayC 0)
-pico_enable_stdio_usb(DisplayC 1)
+pico_enable_stdio_uart(display_oled 0)
+pico_enable_stdio_usb(display_oled 1)
 
 # Add the standard library to the build
-target_link_libraries(DisplayC
-        pico_stdlib)
+target_link_libraries(display_oled
+        pico_stdlib
+        hardware_i2c
+        hardware_pio
+        )
 
 # Add the standard include files to the build
-target_include_directories(DisplayC PRIVATE
+target_include_directories(display_oled PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # Add any user requested libraries
-target_link_libraries(DisplayC 
+target_link_libraries(display_oled 
         hardware_i2c
         )
 
-pico_add_extra_outputs(DisplayC)
+pico_add_extra_outputs(display_oled)
 

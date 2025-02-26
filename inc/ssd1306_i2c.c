@@ -1,5 +1,5 @@
-#include "ssd1306.h"
-#include "font.h"
+#include "ssd1306_i2c.h"
+#include "ssd1306_font.h"
 
 void ssd1306_init(ssd1306_t *ssd, uint8_t width, uint8_t height, bool external_vcc, uint8_t address, i2c_inst_t *i2c) {
   ssd->width = width;
@@ -157,24 +157,15 @@ void ssd1306_vline(ssd1306_t *ssd, uint8_t x, uint8_t y0, uint8_t y1, bool value
 void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
 {
   uint16_t index = 0;
-
-  // Se for uma letra maiúscula
+  char ver=c;
   if (c >= 'A' && c <= 'Z')
   {
     index = (c - 'A' + 11) * 8; // Para letras maiúsculas
-  }
-  // Se for uma letra minúscula
-  else if (c >= 'a' && c <= 'z')
+  }else  if (c >= '0' && c <= '9')
   {
-    index = (c - 'a' + 37) * 8; // Para letras minúsculas
+    index = (c - '0' + 1) * 8; // Adiciona o deslocamento necessário
   }
-  // Se for um número
-  else if (c >= '0' && c <= '9')
-  {
-    index = (c - '0' + 1) * 8; // Para números
-  }
-
-  // Desenha o caractere
+  
   for (uint8_t i = 0; i < 8; ++i)
   {
     uint8_t line = font[index + i];
