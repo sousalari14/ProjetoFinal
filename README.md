@@ -28,5 +28,6 @@ Este jogo, exibe uma sequência de números na matriz de LEDs WS2812, desafiando
 - Pressione os botões para interagir com o jogo.
 - Observe o *feedback* visual nos LEDs e no display OLED.
 
-**Link do vídeo: **
+**Link do vídeo:**
+
 https://drive.google.com/drive/folders/1S0J-ARgk3nNlFIXM_z7Rnt-McLCnL2Nj?usp=sharing
